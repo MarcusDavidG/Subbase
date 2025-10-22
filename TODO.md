@@ -1,0 +1,29 @@
+# SubBase Project Scaffold TODO
+
+- [x] Create top-level folders: frontend, contracts, relayer
+- [x] Add initial README.md in frontend/ folder
+- [x] Add initial README.md in contracts/ folder
+- [x] Add initial README.md in relayer/ folder
+- [x] Update root README.md to summarize project and link sub-READMEs
+- [x] Add .gitignore in root
+- [x] Add LICENSE (MIT) in root
+- [x] Initialize frontend: Vite + React + TS
+- [x] Install Tailwind CSS in frontend
+- [x] Set up shadcn/ui in frontend
+- [x] Integrate OnchainKit in frontend
+- [x] Create wallet connection flow in frontend
+- [x] Create homepage and dashboard pages in frontend
+- [x] Add .env.example in frontend
+- [x] Initialize contracts: Hardhat + TS
+- [x] Create SubscriptionManager.sol contract
+- [x] Write deploy script for contracts
+- [x] Configure hardhat.config.ts for Base Sepolia
+- [x] Add unit test for createSubscription
+- [x] Add .env.example in contracts
+- [x] Initialize relayer: Node.js + TS
+- [x] Install dependencies for relayer (ethers, node-cron, etc.)
+- [x] Implement relayer script
+- [x] Add .env.example in relayer
+- [x] Update READMEs with setup instructions
+- [x] Ensure frontend connects to contract address
+- [x] Provide end-to-end setup instructions in root README

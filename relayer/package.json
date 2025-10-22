@@ -1,0 +1,25 @@
+{
+  "name": "relayer",
+  "version": "1.0.0",
+  "description": "This folder contains the relayer service for the SubBase dApp, built with Node.js and TypeScript. It periodically checks for due subscriptions and executes payments on behalf of users using smart wallets.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "ethers": "^6.15.0",
+    "node-cron": "^4.2.1"
+  }
+}
