@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useAccount, useConnect } from 'wagmi'
 import { Button } from './ui/button'
 
@@ -9,8 +10,13 @@ export function ConnectWallet({ onConnect }: ConnectWalletProps) {
   const { address, isConnected } = useAccount()
   const { connectors, connect } = useConnect()
 
+  useEffect(() => {
+    if (isConnected && address) {
+      onConnect()
+    }
+  }, [isConnected, address, onConnect])
+
   if (isConnected && address) {
-    onConnect()
     return null
   }
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useWalletClient } from 'wagmi';
+import { useAccount, useWalletClient, usePublicClient } from 'wagmi';
 import { useName } from '@coinbase/onchainkit/identity';
 import { ethers } from 'ethers';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -7,33 +7,42 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import SubscriptionManagerABI from '../SubscriptionManager.json';
 
+
+
 const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
 
 export function Dashboard() {
   const { address, isConnected } = useAccount();
   const { data: name } = useName({ address });
   const { data: walletClient } = useWalletClient();
+  const publicClient = usePublicClient();
 
   const [tokenAddress, setTokenAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [recipient, setRecipient] = useState('');
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const getContract = () => {
+  const getContract = async () => {
     if (!walletClient) return null;
-    const provider = new ethers.BrowserProvider(walletClient.transport);
-    const signer = provider.getSigner(walletClient.account.address);
+    const provider = new ethers.BrowserProvider(walletClient);
+    const signer = await provider.getSigner();
     return new ethers.Contract(contractAddress, SubscriptionManagerABI.abi, signer);
   };
 
+  const getReadContract = () => {
+    if (!publicClient) return null;
+    const provider = new ethers.JsonRpcProvider('https://sepolia.base.org');
+    return new ethers.Contract(contractAddress, SubscriptionManagerABI.abi, provider);
+  };
+
   const fetchSubscriptions = async () => {
-    if (!isConnected || !walletClient) return;
+    if (!isConnected || !publicClient) return;
     setLoading(true);
     try {
-      const contract = getContract();
+      const contract = getReadContract();
       if (!contract) return;
-      
+
       // This is a simplified fetch. A more robust implementation would handle all active subscriptions.
       // For now, we assume the user is the subscriber for all their created subscriptions.
       const subCount = await contract.subscriptionCount();
@@ -63,7 +72,7 @@ export function Dashboard() {
     }
     setLoading(true);
     try {
-      const contract = getContract();
+      const contract = await getContract();
       if (!contract) return;
 
       const amountInWei = ethers.parseUnits(amount, 18); // Assuming 18 decimals
@@ -151,10 +160,10 @@ export function Dashboard() {
           <CardContent>
             {subscriptions.length > 0 ? (
               <ul className="space-y-2">
-                {subscriptions.map((sub) => (
+                {subscriptions.map((sub: any) => (
                   <li key={sub.id} className="p-2 border rounded-md">
                     <p><strong>To:</strong> {sub.recipient}</p>
-                    <p><strong>Amount:</strong> {ethers.formatUnits(sub.amount, 18)}</p>
+                    <p><strong>Amount:</strong> {sub.amount != null ? ethers.formatUnits(sub.amount, 18) : '0'}</p>
                     <p><strong>Token:</strong> {sub.token}</p>
                   </li>
                 ))}
