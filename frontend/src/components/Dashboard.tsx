@@ -19,6 +19,7 @@ export function Dashboard() {
 
   const [tokenAddress, setTokenAddress] = useState('');
   const [amount, setAmount] = useState('');
+  const [interval, setInterval] = useState('');
   const [recipient, setRecipient] = useState('');
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ export function Dashboard() {
 
   const getReadContract = () => {
     if (!publicClient) return null;
-    const provider = new ethers.JsonRpcProvider('https://sepolia.base.org');
+    const provider = new ethers.JsonRpcProvider('https://base-sepolia.blockscout.com/');
     return new ethers.Contract(contractAddress, SubscriptionManagerABI.abi, provider);
   };
 
@@ -66,7 +67,7 @@ export function Dashboard() {
   }, [isConnected, walletClient, address]);
 
   const handleCreateSubscription = async () => {
-    if (!tokenAddress || !amount || !recipient) {
+    if (!tokenAddress || !amount || !interval || !recipient) {
       alert('Please fill all fields');
       return;
     }
@@ -76,7 +77,13 @@ export function Dashboard() {
       if (!contract) return;
 
       const amountInWei = ethers.parseUnits(amount, 18); // Assuming 18 decimals
-      const intervalInSeconds = 30 * 24 * 60 * 60; // 30 days
+      const intervalInSeconds = parseInt(interval) * 60; // Convert minutes to seconds
+
+      // Approve the contract to spend tokens (approve a large amount for recurring payments)
+      const tokenContract = new ethers.Contract(tokenAddress, ['function approve(address spender, uint256 amount) external returns (bool)'], await contract.runner);
+      const approveTx = await tokenContract.approve(contractAddress, ethers.MaxUint256); // Approve unlimited for simplicity
+      await approveTx.wait();
+      console.log('Approval tx:', approveTx.hash);
 
       const tx = await contract.createSubscription(
         tokenAddress,
@@ -132,6 +139,17 @@ export function Dashboard() {
                 placeholder="0.01"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Interval (minutes)
+              </label>
+              <Input
+                type="number"
+                placeholder="2"
+                value={interval}
+                onChange={(e) => setInterval(e.target.value)}
               />
             </div>
             <div>
