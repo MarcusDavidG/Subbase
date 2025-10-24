@@ -53,7 +53,6 @@ contract SubscriptionManager is Ownable {
     function executeSubscriptionPayment(uint256 _subscriptionId) external {
         Subscription storage sub = subscriptions[_subscriptionId];
         require(sub.active, "Subscription is not active");
-        require(sub.subscriber == msg.sender || owner() == msg.sender, "Not authorized");
         require(block.timestamp >= sub.nextPayment, "Payment not due yet");
 
         IERC20 token = IERC20(sub.token);

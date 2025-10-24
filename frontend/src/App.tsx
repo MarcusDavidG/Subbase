@@ -8,7 +8,7 @@ import { Dashboard } from './components/Dashboard'
 const config = createConfig({
   chains: [baseSepolia],
   transports: {
-    [baseSepolia.id]: http(import.meta.env.VITE_BASE_RPC_URL || 'https://sepolia.base.org'),
+    [baseSepolia.id]: http(import.meta.env.VITE_BASE_RPC_URL || 'https://base-sepolia.blockscout.com/'),
   },
 })
 

@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS!;
-const RPC_URL = process.env.RPC_URL || 'https://sepolia.base.org';
+const RPC_URL = process.env.RPC_URL || 'https://base-sepolia.blockscout.com/';
 const PRIVATE_KEY = process.env.RELAYER_PRIVATE_KEY!;
 
 const SUBSCRIPTION_MANAGER_ABI = [
